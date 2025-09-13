@@ -53,7 +53,9 @@ const usersData: Record<string, { image: string; email: string }> = {
   },
 };
 
-const renderMultiSelectOption: MultiSelectProps["renderOption"] = ({ option }) => (
+const renderMultiSelectOption: MultiSelectProps["renderOption"] = ({
+  option,
+}) => (
   <Group gap="sm">
     <Avatar src={usersData[option.value].image} size={36} radius="xl" />
     <div>
@@ -80,9 +82,8 @@ export default function AddTaskModal({
     resetForm,
   } = useTaskFormStore();
 
-
-  const [assignees, setAssignees] = useState<string[]>([]);
-  const [assigneesError, setAssigneesError] = useState<string | boolean>(false);
+const [assignees, setAssignees] = useState<string[]>([]);
+const [assigneesError, setAssigneesError] = useState<string>("Assignees is required");
 
   const options = Object.entries(usersData).map(([name, { image, email }]) => ({
     value: name,
@@ -92,7 +93,12 @@ export default function AddTaskModal({
   }));
 
   const handleAdd = () => {
-    if (!title.trim() || !description.trim() || !dueDate || assignees.length === 0) {
+    if (
+      !title.trim() ||
+      !description.trim() ||
+      !dueDate ||
+      assignees.length === 0
+    ) {
       if (assignees.length === 0) setAssigneesError("Assignees is required");
       return;
     }
@@ -101,7 +107,7 @@ export default function AddTaskModal({
     onClose();
     resetForm();
     setAssignees([]);
-    setAssigneesError(false);
+    setAssigneesError("Assignees is required");
   };
 
   return (
@@ -133,12 +139,15 @@ export default function AddTaskModal({
         <MultiSelect
           data={options}
           value={assignees}
-            onChange={(values) => {
-    setAssignees(values);
-    if (values.length > 0) {
-      setAssigneesError(false);
-    }
-  }}
+          onChange={(values) => {
+            setAssignees(values);
+            if (values.length > 0) {
+              setAssigneesError("");
+            }
+            else{
+              setAssigneesError("Assignees is required");
+            }
+          }}
           renderOption={renderMultiSelectOption}
           maxDropdownHeight={300}
           label="Assignees"

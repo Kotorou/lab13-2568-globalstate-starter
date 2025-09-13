@@ -5,18 +5,19 @@ import { type TaskItemProps } from "../libs/Task";
 export const useTaskStore = create<TaskItemProps>((set) => ({
   tasks: [], //เริ่มต้น
   setTasks: (tasks) => set({ tasks }),
-  addTask: (title, description, dueDate) =>
+  addTask: (title, description, dueDate,assignees) =>
     set((state) => ({
       tasks: [
-        ...state.tasks,
+       
         {
           id: uuidv4(),
           title,
           description,
           dueDate,
+          assignees: assignees || [], 
           isDone: false,
           doneAt: null,
-        },
+        }, ...state.tasks,
       ],
     })),
   toggleTask: (id) =>
